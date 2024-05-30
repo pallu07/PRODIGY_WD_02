@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('stopwatch-background.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+       .stopwatch-container {
+            width: 300px;
+            margin: 40px auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+       .stopwatch-display {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+       .stopwatch-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+       .stopwatch-controls button {
+            width: 100px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+       .stopwatch-controls button:hover {
+            background-color: #3e8e41;
+        }
+       .stopwatch-controls button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch-container">
+        <div class="stopwatch-display">
+            <span id="stopwatch-time">00:00:00.000</span>
+        </div>
+        <div class="stopwatch-controls">
+            <button id="start-button">Start</button>
+            <button id="stop-button" disabled>Stop</button>
+            <button id="reset-button">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let startTime = 0;
+        let endTime = 0;
+        let running = false;
+        let intervalId = 0;
+
+        document.getElementById('start-button').addEventListener('click', startStopwatch);
+        document.getElementById('stop-button').addEventListener('click', stopStopwatch);
+        document.getElementById('reset-button').addEventListener('click', resetStopwatch);
+
+        function startStopwatch() {
+            startTime = new Date().getTime();
+            running = true;
+            intervalId = setInterval(updateStopwatch, 10);
+            document.getElementById('start-button').disabled = true;
+            document.getElementById('stop-button').disabled = false;
+        }
+
+        function stopStopwatch() {
+            endTime = new Date().getTime();
+            running = false;
+            clearInterval(intervalId);
+            document.getElementById('start-button').disabled = false;
+            document.getElementById('stop-button').disabled = true;
+        }
+
+        function resetStopwatch() {
+            startTime = 0;
+            endTime = 0;
+            running = false;
+            clearInterval(intervalId);
+            document.getElementById('stopwatch-time').innerHTML = '00:00:00.000';
+            document.getElementById('start-button').disabled = false;
+            document.getElementById('stop-button').disabled = true;
+        }
+
+        function updateStopwatch() {
+            let currentTime = new Date().getTime();
+            let elapsedTime = currentTime - startTime;
+            let hours = Math.floor(elapsedTime / 3600000);
+            let minutes = Math.floor((elapsedTime % 3600000) / 60000);
+            let seconds = Math.floor((elapsedTime % 60000) / 1000);
+            let milliseconds = elapsedTime % 1000;
+            let timeString = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}.${pad(milliseconds, 3)}`;
+            document.getElementById('stopwatch-time').innerHTML = timeString;
+        }
+
+        function pad(number, length = 2) {
+            return String(number).padStart(length, '0');
+        }
+    </script>
+</body>
+</html>
